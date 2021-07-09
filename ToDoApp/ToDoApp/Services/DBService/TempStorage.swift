@@ -7,4 +7,12 @@
 
 import Foundation
 
-
+class TempStorage {
+    
+    static let sharedInstance = TempStorage()
+    private init() { }
+    
+    var highPriorityTodos: [TodoListItem] = []
+    var mediumPriorityTodos: [TodoListItem] = []
+    var lowPriorityTodos: [TodoListItem] = []
+}
