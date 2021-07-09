@@ -7,27 +7,76 @@
 
 import UIKit
 
+protocol ToDoItemVCDelegate: AnyObject {
+    func ToDoItemVCDidCancel()
+    func ToDoItemVC(didFinishAddingItemFor priority: Priority)
+}
+
 class ToDoItemVC: UIViewController {
 
+    weak var delegate: ToDoItemVCDelegate?
+
     @IBOutlet weak var doneBtn: UIBarButtonItem!
+    @IBOutlet weak var cancelBtn: UIBarButtonItem!
+    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var picker: UIPickerView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpDoneBtn()
 
         // Do any additional setup after loading the view.
     }
     
+    var priority: Priority = .medium
 
-    /*
-    // MARK: - Navigation
+    var pickerData = ["High Priority Todos",
+                      "Medium Priority Todos",
+                      "Low Priority Todos"]
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        textField.becomeFirstResponder()
+        picker.selectRow(1, inComponent: 0, animated: true)
     }
-    */
-    private func setUpDoneBtn() {
-        doneBtn.isEnabled = false
+
+    
+    @IBAction func doneBtnAction(_ sender: UIBarButtonItem) {
+        if let textFieldText = textField.text {
+            TodoListDBService.newTodo(text: textFieldText, for: priority)
+            delegate?.ToDoItemVC(didFinishAddingItemFor: priority)
+        }
+    }
+    
+    @IBAction func cancelBtnAction(_ sender: UIBarButtonItem) {
+        delegate?.ToDoItemVCDidCancel()
+    }
+    
+    
+    @IBAction func textFieldChanged(_ sender: UITextField) {
+        if let text = sender.text, !text.isEmpty {
+            doneBtn.isEnabled = true
+        } else {
+            doneBtn.isEnabled = false
+        }
+    }
+}
+
+// MARK: UIPickerViewDataSource, UIPickerViewDelegate
+
+extension ToDoItemVC: UIPickerViewDataSource, UIPickerViewDelegate {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        pickerData.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        pickerData[row]
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        priority = Priority(rawValue: row) ?? .medium
     }
 }
