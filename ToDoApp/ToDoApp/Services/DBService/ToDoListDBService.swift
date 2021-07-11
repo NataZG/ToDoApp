@@ -13,8 +13,6 @@ enum Priority: Int, CaseIterable {
     case low
 }
 
-// MARK: - TodoListDBService
-
 enum TodoListDBService {
     static func addTodo(_ item: TodoListItem, for priority: Priority, at index: Int) {
         switch priority {

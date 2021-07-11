@@ -20,38 +20,33 @@ class ToDoItemVC: UIViewController {
     @IBOutlet weak var cancelBtn: UIBarButtonItem!
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var picker: UIPickerView!
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
-    
+
     var priority: Priority = .medium
 
-    var pickerData = ["High Priority Todos",
-                      "Medium Priority Todos",
-                      "Low Priority Todos"]
+    var pickerData = ["High Priority Tasks",
+        "Medium Priority Tasks",
+        "Low Priority Tasks"]
 
     override func viewWillAppear(_ animated: Bool) {
         textField.becomeFirstResponder()
         picker.selectRow(1, inComponent: 0, animated: true)
     }
 
-    
     @IBAction func doneBtnAction(_ sender: UIBarButtonItem) {
         if let textFieldText = textField.text {
             TodoListDBService.newTodo(text: textFieldText, for: priority)
             delegate?.ToDoItemVC(didFinishAddingItemFor: priority)
         }
     }
-    
+
     @IBAction func cancelBtnAction(_ sender: UIBarButtonItem) {
         delegate?.ToDoItemVCDidCancel()
     }
-    
-    
+
     @IBAction func textFieldChanged(_ sender: UITextField) {
         if let text = sender.text, !text.isEmpty {
             doneBtn.isEnabled = true
