@@ -151,6 +151,9 @@ extension ToDoListTVC {
         }
 
         let itemEdit = UIContextualAction(style: .destructive, title: "Edit") { _, _, _ in
+            
+            // write code
+            
         }
         let swipeActions = UISwipeActionsConfiguration(actions: [itemDelete, itemEdit])
         return swipeActions
